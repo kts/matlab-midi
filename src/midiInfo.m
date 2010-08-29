@@ -34,9 +34,18 @@ if (isempty(tracklist))
   tracklist = 1:length(midi.track);
 end
 
+current_tempo = 500000;  % default tempo
+
+
 [tempos, tempos_time] = getTempoChanges(midi);
 
-current_tempo = 500000;  % default tempo
+% What to do if no tempos are given?
+%  This seems at leat get things to work (see eire01.mid)
+if length(tempos) == 0
+  tempos = [current_tempo];
+  tempos_time = [0];
+end
+
 
 fid = -1;
 if (ischar(outputFormat))
@@ -100,17 +109,23 @@ for i=1:length(tracklist)
 	  )==4);
       
       if (length(ind)==0)
-	error('ending non-open note?');
+	%% was an error before; change to warning and ignore the message.
+	warning('ending non-open note?');
+
       elseif (length(ind)>1)
 	%% ??? not sure about this...
 	%%disp('warning: found mulitple matches in endNote, taking first...');
 	ind = ind(1);
+
+      else
+      
+	% set info on ending:
+	Notes(ind,6) = seconds;
+	Notes(ind,8) = msgNum;
+	
       end
-      
-      % set info on ending:
-      Notes(ind,6) = seconds;
-      Notes(ind,8) = msgNum;
-      
+	
+	
       % end of track:
     elseif (midimeta==0 && type==47)
       if (endtime == -1)
