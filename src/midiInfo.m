@@ -112,13 +112,14 @@ for i=1:length(tracklist)
 	%% was an error before; change to warning and ignore the message.
 	warning('ending non-open note?');
 
-      elseif (length(ind)>1)
-	%% ??? not sure about this...
-	%%disp('warning: found mulitple matches in endNote, taking first...');
-	ind = ind(1);
-
       else
-      
+	if (length(ind)>1)
+	  %% ??? not sure about this...
+	  %disp('warning: found mulitple matches in endNote, taking first...');
+	  %% should we take first or last? should we give a warning?
+	  ind = ind(1);
+	end
+	
 	% set info on ending:
 	Notes(ind,6) = seconds;
 	Notes(ind,8) = msgNum;
@@ -167,7 +168,13 @@ for i=1:length(tracklist)
       Msg{msgNum,6} = dataStr;
     end
     
-    
+  end %% end track.
+  
+  %% any note-on that are not turned off?
+  nleft = sum(Notes(:,8)==-1);
+  if (nleft > 0)
+    %warning(sprintf('%d notes needed to be turned off at end of track.', nleft));
+    Notes(Notes(:,8) == -1, 6) = seconds;
   end
   
   if (outputFormat ~= 0)
