@@ -47,7 +47,7 @@ tempo = 500000;   % could be set by user, etc...
 
 for i=1:Ntracks
   
-  trM = M(i==M(:,1),:);
+  trM = M(tracks(i)==M(:,1),:);
   
   note_events_onoff = [];
   note_events_n = [];
