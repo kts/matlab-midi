@@ -1,4 +1,4 @@
-function [Notes,endtime] = midiInfo(midi,outputFormat,tracklist)
+function [Notes,endtime] = midiInfo(midi,outputFormat,tracklist,verbose)
 % [Notes,endtime] = midiInfo(midi,outputFormat,tracklist)
 %
 % Takes a midi structre and generates info on notes and messages
@@ -23,7 +23,9 @@ function [Notes,endtime] = midiInfo(midi,outputFormat,tracklist)
 
 % Copyright (c) 2009 Ken Schutte
 % more info at: http://www.kenschutte.com/midi
-
+if nargin<4
+  verbose = 0;
+end
 if nargin<3
   tracklist=[];
   if nargin<2
@@ -86,7 +88,13 @@ for i=1:length(tracklist)
     seconds = seconds + deltatime*1e-6*current_tempo/midi.ticks_per_quarter_note;
     
     [mx ind] = max(find(cumtime >= tempos_time));
-    current_tempo = tempos(ind);
+    if numel(ind)>0 % if only we found smth
+        current_tempo = tempos(ind);
+    else
+        if verbose
+            disp('No tempos_time found?');
+        end
+    end
 
     % find start/stop of notes:
     %    if (strcmp(name,'Note on') && (data(2)>0))
@@ -110,7 +118,9 @@ for i=1:length(tracklist)
       
       if (length(ind)==0)
 	%% was an error before; change to warning and ignore the message.
-	warning('ending non-open note?');
+    if verbose
+	  warning('ending non-open note?');
+    end
 
       else
 	if (length(ind)>1)
@@ -132,7 +142,9 @@ for i=1:length(tracklist)
       if (endtime == -1)
 	endtime = seconds;
       else
-	disp('two "end of track" messages?');
+          if verbose
+            disp('two "end of track" messages?');
+          end
 	endtime(end+1) = seconds;
       end
     

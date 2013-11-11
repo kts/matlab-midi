@@ -348,7 +348,6 @@ for i=1:num_tracks
   end % end loop over rawbytes
 end % end loop over tracks
 
-
 function val=decode_int(A)
 
 val = 0;
@@ -379,7 +378,7 @@ end
 function [val,ptr] = decode_var_length(bytes, ptr)
 
 keepgoing=1;
-binarystring = '';
+val = 0;
 while (keepgoing)
   % check MSB:
   %  if MSB=1, then delta-time continues into next byte...
@@ -387,11 +386,9 @@ while (keepgoing)
     keepgoing=0;
   end
   % keep appending last 7 bits from each byte in the deltatime:
-  binbyte = ['00000000' dec2base(bytes(ptr),2)];
-  binarystring = [binarystring binbyte(end-6:end)];
+  val = val*128 + rem(bytes(ptr), 128);
   ptr=ptr+1;
 end
-val = base2dec(binarystring,2);
 
 
 
