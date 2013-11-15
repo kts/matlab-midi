@@ -27,5 +27,10 @@ for i=1:length(midi.track)
   end
 end
 
+if numel(tempos)==0
+    tempos = 500000; % default value for midi
+    tempos_time = 0;
+end
+
 
 

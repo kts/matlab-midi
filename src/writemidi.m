@@ -105,10 +105,12 @@ end
 
 
 function bytes=encode_var_length(val)
-
+if val<128 % covers 99% cases!
+    bytes = val;
+    return
+end
 binStr = dec2base(round(val),2);
 Nbytes = ceil(length(binStr)/7);
-
 binStr = ['00000000' binStr];
 bytes = [];
 for i=1:Nbytes
