@@ -105,6 +105,14 @@ end
 
 
 function bytes=encode_var_length(val)
+
+% What should be done for fractional deltatime values?
+% Need to do this round() before anything else, including
+%  that first check for val<128 (or results in bug for some fractional values).
+% Probably should do rounding elsewhere and require
+% this function to take an integer.
+val = round(val)
+
 if val<128 % covers 99% cases!
     bytes = val;
     return
