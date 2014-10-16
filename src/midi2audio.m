@@ -60,7 +60,19 @@ for i=1:size(Notes,1)
   n1 = floor(Notes(i,5)*Fs)+1;
   N = length(yt);  
 
+  n2 = n1 + N - 1;
+  
+  % hack: for some examples (6246525.midi), one yt
+  %       extended past endtime (just by one sample in this case)
+  % todo: check why that was the case.  For now, just truncate,
+  if (n2 > length(y))
+    ndiff = n2 - length(y);
+    % 
+    yt = yt(1:(end-ndiff));
+    n2 = n2 - ndiff;
+  end
+
   % ensure yt is [1,N]:
-  y(n1:n1+N-1) = y(n1:n1+N-1) + reshape(yt,1,[]);
+  y(n1:n2) = y(n1:n2) + reshape(yt,1,[]);
 
 end
