@@ -298,14 +298,18 @@ if (midimeta==0)
     dataStr = [num2str(data(1)) '/' num2str(data(2)) ', clock ticks and notated 32nd notes=' num2str(data(3)) '/' num2str(data(4))];
   elseif (type==89); name = 'Key Signature';              len=2;   
     % num sharps/flats (flats negative)
-    if (data(1)>=0)
-       %       1   2    3    4   5     6    7   
+    % but data(1) is unsigned 8-bit
+    if (data(1)<=7)
+       %   0   1   2    3    4   5     6     7   
       ss={'C','G','D', 'A', 'E','B',  'F#', 'C#'};
       dataStr = ss{data(1)+1};
-    else
+    elseif (data(1)>=249)
        %    1   2    3    4   5     6    7   
+       %   255   ...                    249
        ss={'F','Bb','Eb','Ab','Db','Gb','Cb'};
-       dataStr = ss{abs(data(1))};
+       dataStr = ss{255-data(1)+1};
+    else
+       dataStr = '?';
     end
     if (data(2)==0)
       dataStr = [dataStr ' Major'];
