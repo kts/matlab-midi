@@ -293,7 +293,7 @@ if (midimeta==0)
   elseif (type==81); name = 'Set Tempo';                  len=3;   
     val = data(1)*16^4+data(2)*16^2+data(3); dataStr = ['microsec per quarter note: ' num2str(val)];
   elseif (type==84); name = 'SMPTE Offset';               len=5;   
-    dataStr = ['[hh mm ss fr ff]=' num2str(data)];
+    dataStr = ['[hh;mm;ss;fr;ff]=' mat2str(data)];
   elseif (type==88); name = 'Time Signature';             len=4;   
     dataStr = [num2str(data(1)) '/' num2str(data(2)) ', clock ticks and notated 32nd notes=' num2str(data(3)) '/' num2str(data(4))];
   elseif (type==89); name = 'Key Signature';              len=2;   
